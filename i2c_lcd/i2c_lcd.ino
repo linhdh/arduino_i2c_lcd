@@ -1,10 +1,17 @@
 #include <Wire.h>
+#include <OneWire.h>
+#include <DallasTemperature.h>
 #include <LiquidCrystal_I2C.h>
 
+#define ONE_WIRE_BUS 2
+
+OneWire oneWire(ONE_WIRE_BUS);
+DallasTemperature sensors(&oneWire);
 int device_address = 0x0;
 LiquidCrystal_I2C *lcd = NULL;
 
 void setup() {
+  sensors.begin();
   Serial.begin (9600);
 
   // Leonardo: wait for serial port to connect
@@ -51,4 +58,21 @@ void setup() {
   lcd->print("LCD Tutorial");
 }  // end of setup
 
-void loop() {}
+void loop() {
+  sensors.requestTemperatures();  
+  int tempc = sensors.getTempCByIndex(0);
+  lcd->clear();
+  lcd->setCursor(0, 0);
+  lcd->print("Temp: ");
+  lcd->print(tempc);
+  lcd->print((char)176);  //shows degrees character
+  lcd->print("C");
+
+  lcd->setCursor(0, 1);
+  lcd->print("Temp: ");
+  lcd->print((tempc * 9.0) / 5.0 + 32.0);
+  lcd->print((char)176);  //shows degrees character
+  lcd->print("F");
+  
+  delay(500);
+}
