@@ -10,6 +10,17 @@ DallasTemperature sensors(&oneWire);
 int device_address = 0x0;
 LiquidCrystal_I2C *lcd = NULL;
 
+byte Degree[8] = {
+  0b00000,
+  0b01110,
+  0b10001,
+  0b10001,
+  0b01110,
+  0b00000,
+  0b00000,
+  0b00000
+};
+
 void setup() {
   sensors.begin();
   Serial.begin (9600);
@@ -56,6 +67,7 @@ void setup() {
   lcd->print("Hello world!");
   lcd->setCursor(2, 1);
   lcd->print("LCD Tutorial");
+  lcd->createChar(0, Degree);
 }  // end of setup
 
 void loop() {
@@ -65,14 +77,14 @@ void loop() {
   lcd->setCursor(0, 0);
   lcd->print("Temp: ");
   lcd->print(tempc);
-  lcd->print((char)176);  //shows degrees character
+  lcd->write(0);  //shows degrees character
   lcd->print("C");
 
   lcd->setCursor(0, 1);
   lcd->print("Temp: ");
   lcd->print((tempc * 9.0) / 5.0 + 32.0);
-  lcd->print((char)176);  //shows degrees character
+  lcd->write(0);  //shows degrees character
   lcd->print("F");
   
-  delay(500);
+  delay(1000);
 }
